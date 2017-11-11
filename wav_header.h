@@ -3,13 +3,6 @@
 #include<vector>
 #include"wav_core.h"
 
-// Got from
-// https://audiocoding.ru/article/2008/05/22/wav-file-structure.html
-//
-// See also:
-// http://soundfile.sapp.org/doc/WaveFormat/
-//
-
 using namespace std;
 
 // Структура, описывающая заголовок WAV файла.

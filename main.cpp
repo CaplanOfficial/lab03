@@ -8,9 +8,6 @@ int main(int argc, char *argv[])
 {
     cout << "************** | WavCore | **************" << endl;
 
-
-    // ################  Tests for WavCore  ################
-
     const char* input_fname  = "C:\\Users\\Àííà\\Desktop\\ÎÎÏ\\lab03\\Debug\\0.wav";
     const char* output_fname = "C:\\Users\\Àííà\\Desktop\\ÎÎÏ\\lab03\\out.wav";
 

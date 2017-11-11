@@ -1,12 +1,9 @@
 #include <cstdio>
 #include <cstring>
-
 #include "wav_header.h"
-
 
 // TODO: Remove all 'magic' numbers
 // TODO: Make the code more secure. Get rid of pointers (after creating a class, of course).
-
 
 void WavData::CreateFromFile(const char *filename)
 {

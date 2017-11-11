@@ -2,7 +2,6 @@
 #define WAV_CORE_H
 #include<exception>
 
-// Possible errors
 class IO_ERROR : public std::exception {
 	virtual const char* what() const throw() {
 		return "IO_ERROR\n";
