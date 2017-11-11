@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "wav_core.h"
+#include "wav_header.h"
 
 using namespace std;
 
@@ -11,68 +11,28 @@ int main(int argc, char *argv[])
 
     // ################  Tests for WavCore  ################
 
-    const char* input_fname  = "C:\\Users\\Анна\\Desktop\\lab03_\\Debug\\0.wav";
-    const char* output_fname = "C:\\Users\\Анна\\Desktop\\lab03_\\out.wav";
+    const char* input_fname  = "C:\\Users\\Анна\\Desktop\\ООП\\lab03\\Debug\\0.wav";
+    const char* output_fname = "C:\\Users\\Анна\\Desktop\\ООП\\lab03\\out.wav";
 
-    wav_errors_e err;
-    wav_header_s header;
-
-
-    // #### Opening WAV file, checking header.
-    err = read_header( input_fname, &header );
-    if ( err != WAV_OK ) {
-        cerr << "read_header() error: " << (int)err << endl;
-        print_info( &header );
-        return err;
-    }
-
-
-    // #### Printing header.
-    print_info( &header );
-
-
-    // #### Reading PCM data from file.
-    vector< vector<short> > chans_data;
-    err = extract_data_int16( input_fname, chans_data );
-    if ( err != WAV_OK ) {
-        cerr << "extract_data_int16() error: " << (int)err << endl;
-        return err;
-    }
-    cout << endl << "********************" << endl;
-
-
-    // #### Make several changes to PCM data.
-
-    // # Making signal mono from stereo.
-    vector< vector<short> > edited_data;
-    err = make_mono( chans_data, edited_data );
-    if ( err != WAV_OK ) {
-        cerr << "make_mono() error: " << (int)err << endl;
-        return err;
-    }
-
-    // # Add a reverberation
-    make_reverb(edited_data, header.sampleRate, 0.5, 0.6f);
-
-
-    // #### Making new WAV file using edited PCM data.
-    err = make_wav_file( output_fname, header.sampleRate, edited_data );
-    if ( err != WAV_OK ) {
-        cerr << "make_wav_file() error: " << (int)err << endl;
-        print_info( &header );
-        return err;
-    }
-
-
-    // #### Reading the file just created to check its header corectness.
-    err = read_header( output_fname, &header );
-    if ( err != WAV_OK ) {
-        cerr << "read_header() error: " << (int)err << endl;
-        print_info( &header );
-        return err;
-    }
-    print_info( &header );
-
+	WavData wav_file;
+	try {
+		wav_file.CreateFromFile(input_fname);
+		wav_file.GetDescription();
+		cout << endl << "********************" << endl;
+		//cout << "isStereo " << wav_file.isStereo() << endl; //чтобы переключался с двух каналов на один
+		cout << "convert\n";
+		wav_file.ConvertStereoToMono();
+		cout << "Is stereo?" << wav_file.isStereo() << endl;
+		cout << "reverb\n";
+		wav_file.ApplyReverb(0.5, 0.6f);
+		wav_file.ChangeSampleRate(22050);
+		cout << "saving\n";
+		wav_file.GetDescription();
+		wav_file.SaveToFile(output_fname);
+	}
+	catch (std::exception *ex) {
+		std::cout << ex->what();
+	};
 
     return 0;
 }

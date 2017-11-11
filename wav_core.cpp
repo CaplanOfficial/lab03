@@ -2,7 +2,6 @@
 #include <cstring>
 
 #include "wav_header.h"
-#include "wav_core.h"
 
 
 // TODO: Remove all 'magic' numbers
@@ -48,7 +47,6 @@ void WavData::GetDescription()
     printf( "-------------------------\n" );
 }
 
-
 void WavData::SetPCMData( FILE* f )
 {
 	/*printf( ">>>> extract_data_int16( %s )\n", filename );
@@ -92,7 +90,6 @@ void WavData::SetPCMData( FILE* f )
         }
     }
 }
-
 
 void WavData::IsHeaderCorrect(size_t file_size_bytes) 
 {
@@ -253,38 +250,40 @@ void WavData::SaveToFile(const char* filename)
 
 }
 
-
-void WavData::ConverStereoToMono(const std::vector<std::vector<short> > &source, std::vector< std::vector<short> > &dest_mono)
+void WavData::ConvertStereoToMono()
 {
-    int chan_count = (int)source.size();
+	//source = chan
+	//edit = dest
+    int chan_count = (int)channels_data.size();
 
     if ( chan_count != 2 ) {
         throw new BAD_PARAMS;
     }
 
-    int samples_count_per_chan = (int)source[0].size();
+    int samples_count_per_chan = (int)channels_data[0].size();
 
     // Verify that all channels have the same number of samples.
     for ( size_t ch = 0; ch < chan_count; ch++ ) {
-        if ( source[ ch ].size() != (size_t) samples_count_per_chan ) {
+        if ( channels_data[ ch ].size() != (size_t) samples_count_per_chan ) {
             throw new BAD_PARAMS;
         }
     }
-
-    dest_mono.resize( 1 );
-    std::vector<short>& mono = dest_mono[ 0 ];
+	std::vector< std::vector <short>> channels_data_copy(channels_data);
+	//может перед этим channnels ещё и обнулить
+    channels_data.resize( 1 );
+    std::vector<short>& mono = channels_data[ 0 ];
     mono.resize( samples_count_per_chan );
 
     // Mono channel is an arithmetic mean of all (two) channels.
     for ( size_t i = 0; i < samples_count_per_chan; i++ ) {
-        mono[ i ] = ( source[0][i] + source[1][i] ) / 2;
+        mono[ i ] = ( channels_data_copy[0][i] + channels_data_copy[1][i] ) / 2;
     }
 
 }
 
 void WavData::ApplyReverb(double delay_seconds, float decay)
 {
-	//sounds=edited
+	std::vector<std::vector<short>>& sounds = channels_data;
     int chan_count = (int)sounds.size();
 
     if ( chan_count < 1 ) {
@@ -300,7 +299,7 @@ void WavData::ApplyReverb(double delay_seconds, float decay)
         }
     }
 
-    int delay_samples = (int)(delay_seconds * sample_rate);
+    int delay_samples = (int)(delay_seconds * header.sampleRate);
 
 
     for ( size_t ch = 0; ch < chan_count; ch++ ) {
@@ -337,4 +336,15 @@ void WavData::ApplyReverb(double delay_seconds, float decay)
         }
     }
 
+}
+
+bool WavData::isStereo() {
+	if ((int)channels_data.size() == 2) return true;
+	else return false;
+}
+
+void WavData::ChangeSampleRate(float new_rate) {
+	int chan_count = (int)channels_data.size();
+	int samples_count_per_chan = (int)channels_data[0].size();
+	SetWavParam(chan_count, 16, new_rate, samples_count_per_chan);
 }
