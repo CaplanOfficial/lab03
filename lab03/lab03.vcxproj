@@ -142,6 +142,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\wav_core.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\wav_core.h" />
+    <ClInclude Include="..\wav_header.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
