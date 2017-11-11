@@ -1,44 +1,78 @@
 #ifndef WAV_CORE_H
 #define WAV_CORE_H
-
-#include <vector>
+#include<exception>
 #include<fstream>
 
 #include "wav_header.h"
 
-
-// TODO: Implement all this in the form of a class.
-// TODO: Use an exception system to control errors.
-// TODO: Make support for 8-bit PSM, not just 16-bit.
-// TODO: Write a function to change the tone of the voice. (Interestingly, it's not too difficult?)
-
-
-// *********************************************************************
-// * Error handling
-// *********************************************************************
-
 // Possible errors
-enum wav_errors_e {
-    WAV_OK = 0,
-    IO_ERROR,
-    BAD_FORMAT,
-    UNSUPPORTED_FORMAT,
-    BAD_PARAMS,
-    DATA_SIZE_ERROR
+class IO_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return "IO_ERROR\n";
+	};
+};
+class BAD_PARAMS : public std::exception {
+	virtual const char* what() const throw() {
+		return "BAD_PARAMS\n";
+	};
+};
+class BAD_FORMAT : public std::exception {
+	virtual const char* what() const throw() {
+		return "BAD_FORMAT\n";
+	};
+};
+class UNSUPPORTED_FORMAT : public std::exception {
+	virtual const char* what() const throw() {
+		return "UNSUPPORTED_FORMAT: Only 16-bit samples is supported\n";
+	};
 };
 
-// Possible header's errors
-enum wav_headers_errors_e {
-    HEADER_OK = 0,
-    HEADER_RIFF_ERROR,
-    HEADER_FILE_SIZE_ERROR,
-    HEADER_WAVE_ERROR,
-    HEADER_FMT_ERROR,
-    HEADER_NOT_PCM,
-    HEADER_SUBCHUNK1_ERROR,
-    HEADER_BYTES_RATE_ERROR,
-    HEADER_BLOCK_ALIGN_ERROR,
-    HEADER_SUBCHUNK2_SIZE_ERROR
+
+//HEADER
+class HEADER_RIFF_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return "HEADER_RIFF_ERROR\n";
+	};
+};
+class HEADER_FILE_SIZE_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return "HEADER_FILE_SIZE_ERROR\n";
+	};
+};
+class HEADER_WAVE_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return "HEADER_WAVE_ERROR\n";
+	};
+};
+class HEADER_FMT_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return "HEADER_FMT_ERROR\n";
+	};
+};
+class HEADER_NOT_PCM : public std::exception {
+	virtual const char* what() const throw() {
+		return "HEADER_NOT_PCM\n";
+	};
+};
+class HEADER_SUBCHUNK1_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return "HEADER_SUBCHUNK1_ERROR\n";
+	};
+};
+class HEADER_BYTES_RATE_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return "HEADER_BYTES_RATE_ERROR\n";
+	};
+};
+class HEADER_BLOCK_ALIGN_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return "HEADER_BLOCK_ALIGN_ERROR\n";
+	};
+};
+class  HEADER_SUBCHUNK2_SIZE_ERROR : public std::exception {
+	virtual const char* what() const throw() {
+		return " HEADER_SUBCHUNK2_SIZE_ERROR\n";
+	};
 };
 
 

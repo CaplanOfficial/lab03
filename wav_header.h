@@ -1,6 +1,6 @@
 #ifndef WAV_HEADER_H
 #define WAV_HEADER_H
-
+#include<vector>
 // Got from
 // https://audiocoding.ru/article/2008/05/22/wav-file-structure.html
 //
@@ -72,6 +72,25 @@ struct wav_header_s
     unsigned long subchunk2Size;
 
     // Далее следуют непосредственно Wav данные.
+};
+
+class WavData {
+private:
+	wav_header_s header;
+	std::vector< std::vector<short> > channels_data;
+public:
+	void CreateFromFile(const char *) throw (IO_ERROR, BAD_FORMAT);
+	void GetDescription();
+	void IsHeaderCorrect(size_t) throw (HEADER_RIFF_ERROR, HEADER_FILE_SIZE_ERROR, HEADER_WAVE_ERROR, HEADER_FMT_ERROR, HEADER_NOT_PCM, HEADER_SUBCHUNK1_ERROR, HEADER_BYTES_RATE_ERROR, HEADER_BLOCK_ALIGN_ERROR, HEADER_FMT_ERROR, HEADER_SUBCHUNK2_SIZE_ERROR);
+	void SetPCMData(FILE *file) throw (IO_ERROR, UNSUPPORTED_FORMAT); //aka extract_data, std::vector<std::vector<short>>& channels_data);
+	void SetDefault(); // aka prefill_header
+	/*aka fill_header*/void SetWavParam(int chan_count, int bits_per_sample, int sample_rate, int samples_count_per_chan) throw (UNSUPPORTED_FORMAT, BAD_PARAMS); //aka fill_header
+	void ConverStereoToMono() throw (BAD_PARAMS);
+	void ApplyReverb(double delay_seconds, float decay) throw (BAD_PARAMS);
+	void SaveToFile(const char* filename) throw (BAD_PARAMS, IO_ERROR);
+	bool isStereo();
+	void ChangeSampleRate(int sample_rate);
+	void CutBegin(float seconds);
 };
 
 #endif // WAV_HEADER_H
